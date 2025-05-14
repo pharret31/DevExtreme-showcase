@@ -32,3 +32,8 @@
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/context-menu-fluent-theme-styles/js/dx.all.js
 
 **[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/context-menu-fluent-theme-styles/css/dx.fluent.blue.light.css
+
+
+### 25.1 T1277409 (Tabs: The scroll position resets)
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1277409/js/dx.all.js
