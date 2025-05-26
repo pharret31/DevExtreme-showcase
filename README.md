@@ -38,7 +38,7 @@
 
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1277409/js/dx.all.js
 
-Fix for TabPanel only **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1277409/js_tabpanel/dx.all.js
+Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1277409/js_tabpanel/dx.all.js
 
 
 ### 25.1 Chat.Editing context menu research mobile behavior
