@@ -11136,19 +11136,37 @@ exports.throwError = throwError;
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable spellcheck/spell-checker */
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 const ERROR_MSG = exports.ERROR_MSG = 'a runtime error occured! Use Inferno in development environment to find the error.';
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function isNullOrUndef(o) {
   return o === void 0 || o === null;
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function isInvalid(o) {
   return o === null || o === false || o === true || o === void 0;
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function isFunction(o) {
   return typeof o === 'function';
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function isNull(o) {
   return o === null;
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function throwError(message) {
   if (!message) {
     message = ERROR_MSG;
@@ -15011,6 +15029,9 @@ deferredConfig.forEach(function (config) {
     return this;
   };
 });
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function fromPromise(promise, context) {
   if ((0, _type.isDeferred)(promise)) {
     return promise;
@@ -15056,13 +15077,22 @@ let whenFunc = function () {
   }
   return deferred.promise();
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function setStrategy(value) {
   DeferredObj = value.Deferred;
   whenFunc = value.when;
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function Deferred() {
   return new DeferredObj();
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 function when() {
   // @ts-expect-error
   return whenFunc.apply(this, arguments);
@@ -15388,6 +15418,9 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.extendFromObject = exports.extend = void 0;
 var _type = __webpack_require__(11528);
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 const extendFromObject = function (target, source, overrideExistingValues) {
   target = target || {};
   for (const prop in source) {
@@ -15400,6 +15433,9 @@ const extendFromObject = function (target, source, overrideExistingValues) {
   }
   return target;
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 exports.extendFromObject = extendFromObject;
 const extend = function (target) {
   target = target || {};
@@ -31128,6 +31164,9 @@ const loadGroupTotalCount = function (dataSource, options) {
   }).fail(d.reject.bind(d));
   return d;
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class GroupingHelper extends _m_grouping_core.GroupingHelper {
   updateTotalItemsCount(options) {
     let totalItemsCount = 0;
@@ -31877,6 +31916,9 @@ const getGroupCount = function (item, groupCount) {
   }
   return count;
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class GroupingHelper extends _m_grouping_core.GroupingHelper {
   handleDataLoading(options) {
     const that = this;
@@ -47311,6 +47353,9 @@ const rowsView = Base => class RowsViewEditingCellBasedExtender extends Base {
     return $row;
   }
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 const editingCellBasedModule = exports.editingCellBasedModule = {
   extenders: {
     controllers: {
@@ -47836,6 +47881,9 @@ const rowsView = Base => class RowsViewEditingFormBasedExtender extends Base {
     });
   }
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 const editingFormBasedModule = exports.editingFormBasedModule = {
   extenders: {
     controllers: {
@@ -47972,6 +48020,9 @@ const rowsView = Base => class RowsViewEditingRowBasedExtender extends Base {
     }
   }
 };
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 const editingRowBasedModule = exports.editingRowBasedModule = {
   extenders: {
     controllers: {
@@ -148163,6 +148214,9 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 const MODULE_NAMESPACE = 'dxHtmlEditorImageUpload';
 const HIDDEN_FILE_UPLOADER_CLASS = 'dx-htmleditor-hidden-content';
 // eslint-disable-next-line import/no-mutable-exports
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 let ImageUploadModule = _m_base.default;
 if (_devextremeQuill.default) {
   // @ts-expect-error
@@ -156801,6 +156855,9 @@ const splitIndex = combinedIndex => ({
   group: combinedIndex >> SELECTION_SHIFT,
   item: combinedIndex & SELECTION_MASK
 });
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class GroupedEditStrategy extends _m_collection_widgetEditStrategy.default {
   _groupElements() {
     return this._collectionWidget._itemContainer().find(`.${LIST_GROUP_CLASS}`);
@@ -181726,6 +181783,9 @@ const STATE_RELEASED = 0;
 const STATE_READY = 1;
 const STATE_REFRESHING = 2;
 const STATE_LOADING = 3;
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class ScrollViewScroller extends _m_scrollable.Scroller {
   ctor() {
     this._topPocketSize = 0;
@@ -181902,6 +181962,9 @@ class ScrollViewScroller extends _m_scrollable.Scroller {
     super.dispose();
   }
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 exports.ScrollViewScroller = ScrollViewScroller;
 class SimulatedScrollViewStrategy extends _m_scrollable.SimulatedStrategy {
   _init(scrollView) {
@@ -182878,6 +182941,9 @@ class BounceAnimator extends InertiaAnimator {
     super._complete();
   }
 }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class Scroller extends _class.default.inherit({}) {
   ctor(options) {
     this._initOptions(options);
@@ -183242,6 +183308,9 @@ class Scroller extends _class.default.inherit({}) {
 exports.Scroller = Scroller;
 let hoveredScrollable;
 let activeScrollable;
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class SimulatedStrategy extends _class.default.inherit({}) {
   ctor(scrollable) {
     this._init(scrollable);
@@ -184632,6 +184701,9 @@ var _type = __webpack_require__(11528);
 var _ui = _interopRequireDefault(__webpack_require__(35185));
 var _m_selection = _interopRequireDefault(__webpack_require__(13085));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class DeferredStrategy extends _m_selection.default {
   getSelectedItems() {
     return this._loadFilteredData(this.options.selectionFilter);
@@ -185186,6 +185258,9 @@ var _type = __webpack_require__(11528);
 var _ui = _interopRequireDefault(__webpack_require__(35185));
 var _m_selection = _interopRequireDefault(__webpack_require__(13085));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+/**
+ * @deprecated Attention! This type is for internal purposes only. If you used it previously, please submit a ticket to our {@link https://supportcenter.devexpress.com/ticket/create Support Center}. We will check if there is an alternative solution.
+ */
 class StandardStrategy extends _m_selection.default {
   constructor(options) {
     super(options);
@@ -189784,13 +189859,16 @@ class TabPanel extends _m_multi_view.default {
     this._$container = (0, _renderer.default)('<div>').addClass(TABPANEL_CONTAINER_CLASS).appendTo($element);
     this._$container.append(this._$wrapper);
     const {
+      focusStateEnabled,
       selectedIndex
     } = this.option();
-    // @ts-expect-error ts-error
-    const selectedItem = this._tabs.itemElements().get(selectedIndex);
-    this._tabs.option({
-      focusedElement: selectedItem
-    });
+    if (focusStateEnabled) {
+      // @ts-expect-error ts-error
+      const selectedItem = this._tabs.itemElements().get(selectedIndex);
+      this._tabs.option({
+        focusedElement: selectedItem ?? null
+      });
+    }
   }
   _refreshActiveDescendant() {
     if (!this._tabs) {
