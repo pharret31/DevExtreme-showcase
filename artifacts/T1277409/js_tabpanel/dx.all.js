@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.all.js)
 * Version: 25.1.2
-* Build date: Thu May 22 2025
+* Build date: Mon May 26 2025
 *
 * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -35358,7 +35358,6 @@ var _size = __webpack_require__(57653);
 var _type = __webpack_require__(11528);
 var _button = _interopRequireDefault(__webpack_require__(64973));
 var _ui = _interopRequireDefault(__webpack_require__(10720));
-var _themes = __webpack_require__(52071);
 var _tree_view = _interopRequireDefault(__webpack_require__(4313));
 var _m_modules = _interopRequireDefault(__webpack_require__(74854));
 var _m_columns_view = __webpack_require__(48921);
@@ -35432,11 +35431,12 @@ class ColumnChooserController extends _m_modules.default.ViewController {
     }
   }
   getPosition() {
+    var _this$_rowsView;
     const position = this.option('columnChooser.position');
     return (0, _type.isDefined)(position) ? position : {
       my: 'right bottom',
       at: 'right bottom',
-      of: this._rowsView && this._rowsView.element(),
+      of: (_this$_rowsView = this._rowsView) === null || _this$_rowsView === void 0 ? void 0 : _this$_rowsView.element(),
       collision: 'fit',
       offset: '-2 -2',
       boundaryOffset: '2 2'
@@ -35469,13 +35469,10 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
     const $element = that.element().addClass(columnChooserClass);
     const columnChooserOptions = that.option('columnChooser');
     const popupPosition = this._columnChooserController.getPosition();
-    const themeName = (0, _themes.current)();
-    const isGenericTheme = (0, _themes.isGeneric)(themeName);
-    const isMaterial = (0, _themes.isMaterial)(themeName);
     const dxPopupOptions = {
       visible: false,
       shading: false,
-      showCloseButton: false,
+      showCloseButton: true,
       dragEnabled: true,
       resizeEnabled: true,
       wrapperAttr: {
@@ -35484,7 +35481,7 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
       toolbarItems: [{
         text: columnChooserOptions.title,
         toolbar: 'top',
-        location: isGenericTheme || isMaterial ? 'before' : 'center'
+        location: 'before'
       }],
       position: popupPosition,
       width: columnChooserOptions.width,
@@ -35498,16 +35495,6 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
       container: columnChooserOptions.container,
       _loopFocus: true
     };
-    if (isGenericTheme || isMaterial) {
-      (0, _extend.extend)(dxPopupOptions, {
-        showCloseButton: true
-      });
-    } else {
-      // @ts-expect-error
-      dxPopupOptions.toolbarItems[dxPopupOptions.toolbarItems.length] = {
-        shortcut: 'cancel'
-      };
-    }
     if (!(0, _type.isDefined)(this._popupContainer)) {
       that._popupContainer = that._createComponent($element, _ui.default, dxPopupOptions);
       that._popupContainer.on('optionChanged', args => {
@@ -35693,11 +35680,12 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
     }
   }
   getColumnElements() {
+    var _this$_popupContainer;
     const result = [];
     const isSelectMode = this.isSelectMode();
     const chooserColumns = this._columnsController.getChooserColumns(isSelectMode);
-    const $content = this._popupContainer && this._popupContainer.$content();
-    const $nodes = $content && $content.find('.dx-treeview-node');
+    const $content = (_this$_popupContainer = this._popupContainer) === null || _this$_popupContainer === void 0 ? void 0 : _this$_popupContainer.$content();
+    const $nodes = $content === null || $content === void 0 ? void 0 : $content.find('.dx-treeview-node');
     if ($nodes) {
       chooserColumns.forEach(column => {
         const $node = $nodes.filter(`[data-item-id = '${column.index}']`);
@@ -35723,9 +35711,10 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
     return isDragMode && this.isColumnChooserVisible() && column.allowHiding;
   }
   getBoundingRect() {
+    var _that$_popupContainer;
     const that = this;
-    const container = that._popupContainer && that._popupContainer.$overlayContent();
-    if (container && container.is(':visible')) {
+    const container = (_that$_popupContainer = that._popupContainer) === null || _that$_popupContainer === void 0 ? void 0 : _that$_popupContainer.$overlayContent();
+    if (container !== null && container !== void 0 && container.is(':visible')) {
       const offset = container.offset();
       return {
         left: offset.left,
@@ -35753,7 +35742,7 @@ class ColumnChooserView extends _m_columns_view.ColumnsView {
   }
   isColumnChooserVisible() {
     const popupContainer = this._popupContainer;
-    return popupContainer && popupContainer.option('visible');
+    return popupContainer === null || popupContainer === void 0 ? void 0 : popupContainer.option('visible');
   }
   isSelectMode() {
     return this.option('columnChooser.mode') === 'select';
@@ -52115,20 +52104,35 @@ class HeaderFilterView extends _m_modules.default.View {
         return $element.html(data.text);
       }
     };
-    function onOptionChanged(e) {
-      // T835492, T833015
-      if (e.fullName === 'searchValue' && needShowSelectAllCheckbox && that.option('headerFilter.hideSelectAllOnSearch') !== false) {
-        if (options.type === 'tree') {
-          e.component.option('showCheckBoxesMode', e.value ? 'normal' : 'selectAll');
-        } else {
-          e.component.option('selectionMode', e.value ? 'multiple' : 'all');
-        }
+    const shouldChangeSelectAllCheckBoxVisibility = () => needShowSelectAllCheckbox && that.option('headerFilter.hideSelectAllOnSearch') !== false;
+    const onTreeViewOptionChanged = event => {
+      switch (true) {
+        case event.fullName === 'searchValue' && shouldChangeSelectAllCheckBoxVisibility():
+          event.component.option('showCheckBoxesMode', event.value ? 'normal' : 'selectAll');
+          break;
+        // TODO TreeView: remove this WA after Navigation squad re-render fix
+        // NOTE: WA for TreeView re-render after changing the "showCheckBoxesMode" option
+        // After this option change the whole TreeView re-render and search input loose the focus
+        case event.fullName === 'showCheckBoxesMode':
+          // NOTE: the TreeView render is async
+          // So we should focus the searchEditor only after render will be completed
+          Promise.resolve().then(() => {
+            event.component._searchEditor.focus();
+          }).catch(() => {});
+          break;
+        default:
+          break;
       }
-    }
+    };
+    const onListOptionChanged = event => {
+      if (event.fullName === 'searchValue' && shouldChangeSelectAllCheckBoxVisibility()) {
+        event.component.option('selectionMode', event.value ? 'multiple' : 'all');
+      }
+    };
     if (options.type === 'tree') {
       that._listComponent = that._createComponent((0, _renderer.default)('<div>').appendTo($content), _tree_view.default, (0, _extend.extend)(widgetOptions, {
         showCheckBoxesMode: needShowSelectAllCheckbox ? 'selectAll' : 'normal',
-        onOptionChanged,
+        onOptionChanged: onTreeViewOptionChanged,
         keyExpr: 'id'
       }));
     } else {
@@ -52137,7 +52141,7 @@ class HeaderFilterView extends _m_modules.default.View {
         pageLoadMode: 'scrollBottom',
         showSelectionControls: true,
         selectionMode: needShowSelectAllCheckbox ? 'all' : 'multiple',
-        onOptionChanged,
+        onOptionChanged: onListOptionChanged,
         onSelectionChanged(event) {
           const {
             component: listComponent
@@ -53045,8 +53049,16 @@ class KeyboardNavigationController extends _m_keyboard_navigation_core.KeyboardN
       this._updateFocusedCellPosition($element);
     }
   }
-  focusOutHandler() {
+  focusOutHandler(e) {
+    const {
+      relatedTarget
+    } = e;
     this._toggleInertAttr(false);
+    if (relatedTarget && !this.isInsideFocusedView((0, _renderer.default)(relatedTarget))) {
+      this._isNeedFocus = false;
+      this._isHiddenFocus = false;
+      this._isNeedScroll = false;
+    }
   }
   subscribeToRowsViewFocusEvent() {
     var _this$_rowsView;
@@ -53953,10 +53965,9 @@ class KeyboardNavigationController extends _m_keyboard_navigation_core.KeyboardN
       }
     }
   }
-  _getFocusedViewByElement($element) {
+  isInsideFocusedView($element) {
     var _this$_focusedView2;
-    const $view = (0, _renderer.default)((_this$_focusedView2 = this._focusedView) === null || _this$_focusedView2 === void 0 ? void 0 : _this$_focusedView2.element());
-    return ($element === null || $element === void 0 ? void 0 : $element.closest($view).length) !== 0;
+    return $element.closest((_this$_focusedView2 = this._focusedView) === null || _this$_focusedView2 === void 0 ? void 0 : _this$_focusedView2.element()).length !== 0;
   }
   _focusView() {
     this._focusedView = this._rowsView;
@@ -55465,8 +55476,8 @@ const keyboardNavigationScrollableA11yExtender = Base => class ScrollableA11yExt
     this.translateFocusIfNeed(event, $target);
     super.focusinHandler(event);
   }
-  focusOutHandler() {
-    super.focusOutHandler();
+  focusOutHandler(e) {
+    super.focusOutHandler(e);
     this.makeScrollableFocusableIfNeed();
   }
   translateFocusIfNeed(event, $target) {
@@ -63526,31 +63537,31 @@ class ResizingController extends _m_modules.default.ViewController {
     return 'dxDataGrid-ariaDataGrid';
   }
   _setAriaLabel(e) {
+    var _this$_columnsControl;
     let widgetStatusText = '';
     let labelParts = [];
-    if (!(e !== null && e !== void 0 && e.isFirstRender)) {
-      var _this$_columnsControl;
-      const columnCount = ((_this$_columnsControl = this._columnsController) === null || _this$_columnsControl === void 0 || (_this$_columnsControl = _this$_columnsControl._columns) === null || _this$_columnsControl === void 0 ? void 0 : _this$_columnsControl.filter(_ref => {
-        let {
-          visible
-        } = _ref;
-        return !!visible;
-      }).length) ?? 0;
-      const totalItemsCount = Math.max(0, this._dataController.totalItemsCount());
-      const widgetAriaLabel = this._getWidgetAriaLabel();
-      widgetStatusText = _message.default
-      // @ts-expect-error Badly typed format method
-      .format(widgetAriaLabel, totalItemsCount, columnCount);
-      // @ts-expect-error Treelist Variable
-      const expandableWidgetAriaLabel = _message.default.format(this._expandableWidgetAriaId);
-      labelParts = [widgetStatusText];
-      if (expandableWidgetAriaLabel) {
-        labelParts.push(expandableWidgetAriaLabel);
-      }
+    const columnCount = ((_this$_columnsControl = this._columnsController) === null || _this$_columnsControl === void 0 || (_this$_columnsControl = _this$_columnsControl._columns) === null || _this$_columnsControl === void 0 ? void 0 : _this$_columnsControl.filter(_ref => {
+      let {
+        visible
+      } = _ref;
+      return !!visible;
+    }).length) ?? 0;
+    const totalItemsCount = Math.max(0, this._dataController.totalItemsCount());
+    const widgetAriaLabel = this._getWidgetAriaLabel();
+    widgetStatusText = _message.default
+    // @ts-expect-error Badly typed format method
+    .format(widgetAriaLabel, totalItemsCount, columnCount);
+    // @ts-expect-error Treelist Variable
+    const expandableWidgetAriaLabel = _message.default.format(this._expandableWidgetAriaId);
+    labelParts = [widgetStatusText];
+    if (expandableWidgetAriaLabel) {
+      labelParts.push(expandableWidgetAriaLabel);
     }
     const $ariaLabelElement = this.component.$element().children(`.${GRIDBASE_CONTAINER_CLASS}`);
     this.component.setAria('label', labelParts.join('. '), $ariaLabelElement);
-    this._gridView.setWidgetA11yStatusText(widgetStatusText);
+    if (!(e !== null && e !== void 0 && e.isFirstRender)) {
+      this._gridView.setWidgetA11yStatusText(widgetStatusText);
+    }
   }
   _getBestFitWidths() {
     var _widths;
@@ -68337,7 +68348,9 @@ exports.Card = exports.CLASSES = void 0;
 var _inferno = __webpack_require__(76231);
 var _index = __webpack_require__(98834);
 var _index2 = __webpack_require__(69786);
+var _m_guid = __webpack_require__(7201);
 var _combine_classes = __webpack_require__(46190);
+var _utils = __webpack_require__(94944);
 var _index3 = __webpack_require__(58529);
 var _cover = __webpack_require__(35710);
 var _field = __webpack_require__(3637);
@@ -68436,9 +68449,12 @@ class Card extends _inferno.Component {
       [CLASSES.cardHover]: !!hoverStateEnabled,
       [CLASSES.selectCard]: !!card.isSelected
     });
-    const hasCover = cover === null || cover === void 0 ? void 0 : cover.imageExpr;
+    const hasCover = !!(cover !== null && cover !== void 0 && cover.imageExpr);
     const imageSrc = cover === null || cover === void 0 || (_cover$imageExpr = cover.imageExpr) === null || _cover$imageExpr === void 0 ? void 0 : _cover$imageExpr.call(cover, this.props.card.data);
     const alt = cover === null || cover === void 0 || (_cover$altExpr = cover.altExpr) === null || _cover$altExpr === void 0 ? void 0 : _cover$altExpr.call(cover, this.props.card.data);
+    const cardRole = Template ? 'presentation' : 'application';
+    const coverId = new _m_guid.Guid();
+    const contentId = new _m_guid.Guid();
     return (0, _inferno.createComponentVNode)(2, _index3.KbnFocusTrap, {
       "elementRef": this.containerRef,
       "enabled": this.props.kbnEnabled,
@@ -68449,6 +68465,10 @@ class Card extends _inferno.Component {
       "onMouseLeave": this.handleMouseLeave,
       "onContextMenu": this.props.onContextMenu,
       "onKeyDown": this.props.onKeyDown,
+      "role": cardRole,
+      "aria-roledescription": (0, _utils.getCardRoleDescription)(this.props.allowUpdating),
+      "aria-label": (0, _utils.getCardStateDescription)(this.props.position, this.props.isCheckBoxesRendered, this.props.card.isSelected),
+      "aria-describedby": (0, _utils.getCardDescriptiveLabel)(hasCover, coverId, contentId),
       children: Template ? (0, _inferno.createComponentVNode)(2, Template, {
         "card": card
       }) : (0, _inferno.createFragment)([(0, _inferno.createComponentVNode)(2, _header.CardHeader, {
@@ -68469,6 +68489,7 @@ class Card extends _inferno.Component {
         "allowUpdating": this.props.allowUpdating,
         "allowDeleting": this.props.allowDeleting
       }), hasCover && (0, _inferno.createComponentVNode)(2, _cover.Cover, {
+        "id": coverId,
         "card": card,
         "template": (_this$props$cover = this.props.cover) === null || _this$props$cover === void 0 ? void 0 : _this$props$cover.template,
         "imageSrc": imageSrc,
@@ -68481,7 +68502,9 @@ class Card extends _inferno.Component {
         "template": field.column.fieldTemplate,
         "captionTemplate": field.column.fieldCaptionTemplate,
         "valueTemplate": field.column.fieldValueTemplate
-      })), 0), FooterTemplate && (0, _inferno.createVNode)(1, "div", CLASSES.footer, (0, _inferno.createComponentVNode)(2, FooterTemplate, {
+      })), 0, {
+        "id": contentId
+      }), FooterTemplate && (0, _inferno.createVNode)(1, "div", CLASSES.footer, (0, _inferno.createComponentVNode)(2, FooterTemplate, {
         "card": card
       }), 2)], 0)
     });
@@ -68533,6 +68556,7 @@ const CLASSES = exports.CLASSES = {
 class Cover extends _inferno.Component {
   render() {
     const {
+      id,
       imageSrc,
       alt,
       template: Template,
@@ -68551,7 +68575,9 @@ class Cover extends _inferno.Component {
     }), !src && (0, _inferno.createComponentVNode)(2, _icon.Icon, {
       "name": 'imagethumbnail',
       "aria-label": _message.default.format('dxCardView-cardNoImageAriaLabel')
-    })], 0), 0);
+    })], 0), 0, {
+      "id": id
+    });
   }
 }
 exports.Cover = Cover;
@@ -68617,8 +68643,10 @@ Object.defineProperty(exports, "__esModule", ({
 exports.CardHeader = exports.CLASSES = void 0;
 var _inferno = __webpack_require__(76231);
 var _index = __webpack_require__(98834);
+var _message = _interopRequireDefault(__webpack_require__(33881));
 var _m_type = __webpack_require__(39918);
 var _toolbar = __webpack_require__(48696);
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const CLASSES = exports.CLASSES = {
   cardHeader: 'dx-cardview-card-header',
   cardSelectCheckBox: 'dx-cardview-select-checkbox'
@@ -68636,6 +68664,9 @@ class CardHeader extends _inferno.Component {
         widget: 'dxCheckBox',
         cssClass: CLASSES.cardSelectCheckBox,
         options: {
+          elementAttr: {
+            'aria-label': _message.default.format('dxCardView-ariaSelectCard')
+          },
           value: card.isSelected,
           onValueChanged: e => {
             const event = e.event;
@@ -68753,6 +68784,7 @@ exports.Content = exports.CLASSES = void 0;
 var _inferno = __webpack_require__(76231);
 var _utils = __webpack_require__(98834);
 var _combine_classes = __webpack_require__(46190);
+var _utils2 = __webpack_require__(94944);
 var _index = __webpack_require__(58529);
 var _card = __webpack_require__(46715);
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); } /* eslint-disable
@@ -68872,6 +68904,7 @@ class Content extends _inferno.Component {
         },
         "caughtEventPreventDefault": true,
         "card": item,
+        "position": (0, _utils2.getPosition)(idx, this.props.cardsPerRow ?? 1),
         "onContextMenu": e => {
           var _this$props$showCardC, _this$props3;
           (_this$props$showCardC = (_this$props3 = this.props).showCardContextMenu) === null || _this$props$showCardC === void 0 || _this$props$showCardC.call(_this$props3, e, item, idx);
@@ -69794,7 +69827,9 @@ const EmptyHeaderPanelText = props => {
   const [leftPart, rightPart] = text.split('{0}');
   return (0, _inferno.createVNode)(1, "span", CLASSES.headerPanelTextEmpty, [leftPart, (0, _inferno.createVNode)(1, "a", CLASSES.link, columnChooserText, 0, {
     "onClick": props.openColumnChooser
-  }), rightPart], 0);
+  }), rightPart], 0, {
+    "role": 'menuitem'
+  });
 };
 class HeaderPanel extends _inferno.Component {
   render() {
@@ -70067,8 +70102,8 @@ var _index = __webpack_require__(58529);
 var _index2 = __webpack_require__(45415);
 var _filter_controller = __webpack_require__(24628);
 var _view_controller = __webpack_require__(58814);
-var _sorting_controller = __webpack_require__(93689);
-var _index3 = __webpack_require__(6024);
+var _index3 = __webpack_require__(37386);
+var _index4 = __webpack_require__(6024);
 var _options_controller = __webpack_require__(42015);
 var _controller = __webpack_require__(10567);
 var _header_panel = __webpack_require__(84531);
@@ -70157,7 +70192,7 @@ class HeaderPanelView extends _view.View {
   }
 }
 exports.HeaderPanelView = HeaderPanelView;
-HeaderPanelView.dependencies = [_controller.HeaderPanelController, _index3.ContextMenuController, _sorting_controller.SortingController, _columns_controller.ColumnsController, _options_controller.OptionsController, _view_controller.HeaderFilterViewController, _index.KeyboardNavigationController, _index2.ColumnChooserController, _filter_controller.FilterController, _index2.ColumnChooserView];
+HeaderPanelView.dependencies = [_controller.HeaderPanelController, _index4.ContextMenuController, _index3.SortingController, _columns_controller.ColumnsController, _options_controller.OptionsController, _view_controller.HeaderFilterViewController, _index.KeyboardNavigationController, _index2.ColumnChooserController, _filter_controller.FilterController, _index2.ColumnChooserView];
 
 /***/ }),
 
@@ -70179,6 +70214,7 @@ var _index2 = __webpack_require__(63108);
 var _index3 = __webpack_require__(58529);
 var _view3 = __webpack_require__(93825);
 var _view4 = __webpack_require__(5061);
+var _index4 = __webpack_require__(8197);
 var _config_context = __webpack_require__(11024);
 var _view5 = __webpack_require__(32643);
 var _root_element_updater = __webpack_require__(16314);
@@ -70204,6 +70240,8 @@ function MainViewComponent(_ref) {
     EditPopup,
     config,
     rootElementRef,
+    accessibilityDescription,
+    accessibilityStatus,
     onKeyDown
   } = _ref;
   return (0, _inferno.createFragment)([(0, _inferno.createComponentVNode)(2, _config_context.ConfigContext.Provider, {
@@ -70211,14 +70249,18 @@ function MainViewComponent(_ref) {
     children: (0, _inferno.createComponentVNode)(2, _root_element_updater.RootElementUpdater, {
       "rootElementRef": rootElementRef,
       "className": CLASSES.cardView,
-      children: (0, _inferno.createVNode)(1, "div", "dx-cardview-root-container", [(0, _inferno.createVNode)(1, "div", "dx-cardview-header-container", [(0, _inferno.createComponentVNode)(2, Toolbar), (0, _inferno.createComponentVNode)(2, HeaderPanel)], 4), (0, _inferno.createComponentVNode)(2, Content), (0, _inferno.createComponentVNode)(2, FilterPanel), (0, _inferno.createVNode)(1, "div", null, (0, _inferno.createComponentVNode)(2, Pager), 0), (0, _inferno.createComponentVNode)(2, HeaderFilterPopup), (0, _inferno.createComponentVNode)(2, EditPopup), (0, _inferno.createComponentVNode)(2, ColumnChooser), (0, _inferno.createComponentVNode)(2, ContextMenu)], 4, {
+      children: (0, _inferno.createVNode)(1, "div", "dx-cardview-root-container", [(0, _inferno.createComponentVNode)(2, _index4.A11yStatusContainer, {
+        "statusText": accessibilityStatus
+      }), (0, _inferno.createVNode)(1, "div", "dx-cardview-header-container", [(0, _inferno.createComponentVNode)(2, Toolbar), (0, _inferno.createComponentVNode)(2, HeaderPanel)], 4), (0, _inferno.createComponentVNode)(2, Content), (0, _inferno.createComponentVNode)(2, FilterPanel), (0, _inferno.createVNode)(1, "div", null, (0, _inferno.createComponentVNode)(2, Pager), 0), (0, _inferno.createComponentVNode)(2, HeaderFilterPopup), (0, _inferno.createComponentVNode)(2, EditPopup), (0, _inferno.createComponentVNode)(2, ColumnChooser), (0, _inferno.createComponentVNode)(2, ContextMenu)], 4, {
+        "role": 'group',
+        "aria-label": accessibilityDescription,
         "onKeyDown": onKeyDown
       })
     })
   })], 4);
 }
 class MainView extends _view.View {
-  constructor(content, pager, toolbar, headerPanel, headerFilterPopup, filterPanel, columnsChooser, editPopup, contextMenu, options, keyboardNavigation) {
+  constructor(content, pager, toolbar, headerPanel, headerFilterPopup, filterPanel, columnsChooser, editPopup, contextMenu, options, keyboardNavigation, accessibility) {
     super();
     this.content = content;
     this.pager = pager;
@@ -70231,6 +70273,7 @@ class MainView extends _view.View {
     this.contextMenu = contextMenu;
     this.options = options;
     this.keyboardNavigation = keyboardNavigation;
+    this.accessibility = accessibility;
     this.component = MainViewComponent;
   }
   // eslint-disable-next-line @stylistic/max-len
@@ -70256,12 +70299,14 @@ class MainView extends _view.View {
       },
       onKeyDown: event => {
         this.keyboardNavigation.onKeyDown(event);
-      }
+      },
+      accessibilityDescription: this.accessibility.componentDescription.value,
+      accessibilityStatus: this.accessibility.componentStatus.value
     }));
   }
 }
 exports.MainView = MainView;
-MainView.dependencies = [_view6.ContentView, _view3.PagerView, _view4.ToolbarView, _view8.HeaderPanelView, _index2.HeaderFilterPopupView, _view2.FilterPanelView, _index.ColumnChooserView, _view5.EditPopupView, _view7.ContextMenuView, _options_controller.OptionsController, _index3.KeyboardNavigationController];
+MainView.dependencies = [_view6.ContentView, _view3.PagerView, _view4.ToolbarView, _view8.HeaderPanelView, _index2.HeaderFilterPopupView, _view2.FilterPanelView, _index.ColumnChooserView, _view5.EditPopupView, _view7.ContextMenuView, _options_controller.OptionsController, _index3.KeyboardNavigationController, _index4.AccessibilityController];
 
 /***/ }),
 
@@ -70362,6 +70407,143 @@ var _default = exports["default"] = CardView;
 
 /***/ }),
 
+/***/ 95569:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.AccessibilityController = void 0;
+var _message = _interopRequireDefault(__webpack_require__(33881));
+var _signalsCore = __webpack_require__(70037);
+var _columns_controller = __webpack_require__(88195);
+var _index = __webpack_require__(61124);
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+class AccessibilityController {
+  constructor(columnsController, dataController) {
+    this.columnsController = columnsController;
+    this.dataController = dataController;
+    this.firstRender = (0, _signalsCore.signal)(true);
+    this.description = (0, _signalsCore.computed)(
+    // @ts-expect-error ts-error
+    () => _message.default.format('dxCardView-ariaCardView', this.dataController.totalCount.value, this.columnsController.visibleColumns.value.length));
+    this.componentDescription = (0, _signalsCore.computed)(() => this.description.value);
+    this.componentStatus = (0, _signalsCore.computed)(() => {
+      if (this.firstRender.value) {
+        return '';
+      }
+      return this.componentDescription.value;
+    });
+    let firstRender = true;
+    (0, _signalsCore.effect)(() => {
+      // TODO: First Render refactor
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+      this.componentDescription.value;
+      if (!firstRender) {
+        this.firstRender.value = false;
+      }
+      firstRender = false;
+    });
+  }
+}
+exports.AccessibilityController = AccessibilityController;
+AccessibilityController.dependencies = [_columns_controller.ColumnsController, _index.DataController];
+
+/***/ }),
+
+/***/ 8197:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+Object.defineProperty(exports, "A11yStatusContainer", ({
+  enumerable: true,
+  get: function () {
+    return _status.A11yStatusContainer;
+  }
+}));
+Object.defineProperty(exports, "AccessibilityController", ({
+  enumerable: true,
+  get: function () {
+    return _controller.AccessibilityController;
+  }
+}));
+var _controller = __webpack_require__(95569);
+var _status = __webpack_require__(54052);
+
+/***/ }),
+
+/***/ 54052:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.A11yStatusContainer = void 0;
+var _inferno = __webpack_require__(76231);
+var _const = __webpack_require__(46793);
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
+const CLASSES = _extends({}, _const.CLASSES, {
+  container: 'dx-gridbase-a11y-status-container'
+});
+class A11yStatusContainer extends _inferno.Component {
+  render() {
+    return (0, _inferno.createVNode)(1, "div", `${CLASSES.container} ${CLASSES.excludeFlexBox}`, this.props.statusText ?? '', 0, {
+      "role": 'status'
+    });
+  }
+}
+exports.A11yStatusContainer = A11yStatusContainer;
+
+/***/ }),
+
+/***/ 94944:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.getPosition = exports.getCardStateDescription = exports.getCardRoleDescription = exports.getCardDescriptiveLabel = void 0;
+var _message = _interopRequireDefault(__webpack_require__(33881));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const getCardRoleDescription = isEditable => isEditable ? _message.default.format('dxCardView-ariaEditableCard') : _message.default.format('dxCardView-ariaCard');
+// @ts-expect-error ts-error
+exports.getCardRoleDescription = getCardRoleDescription;
+const getPositionDescription = position => position ? _message.default.format('dxCardView-ariaCardPosition', position.rowIndex + 1, position.columnIndex + 1) : '';
+const getCardStateDescription = (position, isSelectable, isSelected) => {
+  const parts = [getPositionDescription(position)];
+  if (isSelectable) {
+    parts.push(isSelected ? _message.default.format('dxCardView-ariaSelectedCardState') : _message.default.format('dxCardView-ariaNotSelectedCardState'));
+  }
+  return parts.join(', ');
+};
+exports.getCardStateDescription = getCardStateDescription;
+const getCardDescriptiveLabel = (hasCover, coverId, contentId) => {
+  const ids = [];
+  if (hasCover) {
+    ids.push(coverId);
+  }
+  ids.push(contentId);
+  return ids.join(' ');
+};
+exports.getCardDescriptiveLabel = getCardDescriptiveLabel;
+const getPosition = (idx, columnCount) => ({
+  rowIndex: Math.floor(idx / columnCount),
+  columnIndex: idx % columnCount
+});
+exports.getPosition = getPosition;
+
+/***/ }),
+
 /***/ 6747:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -70431,8 +70613,8 @@ class ColumnChooser extends _inferno.Component {
       "shading": false,
       "dragEnabled": true,
       "resizeEnabled": true,
+      "showCloseButton": true,
       "_loopFocus": true,
-      "showCloseButton": popupConfig.showCloseButton,
       "toolbarItems": popupConfig.toolbarItems,
       "wrapperAttr": {
         class: this.getPopupWrapperClass()
@@ -70674,7 +70856,6 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.ColumnChooserView = void 0;
-var _themes = __webpack_require__(52071);
 var _signalsCore = __webpack_require__(70037);
 var _inferno = __webpack_require__(76231);
 var _index = __webpack_require__(50875);
@@ -70712,12 +70893,6 @@ class ColumnChooserView extends _view.View {
         toolbar: 'top',
         location: 'before'
       }];
-      if (!this.isMaterialOrGeneric()) {
-        // @ts-expect-error
-        items.push({
-          shortcut: 'cancel'
-        });
-      }
       return items;
     });
     this.mode = this.options.oneWay('columnChooser.mode');
@@ -70773,7 +70948,6 @@ class ColumnChooserView extends _view.View {
         container: this.options.oneWay('columnChooser.container').value,
         position: this.options.oneWay('columnChooser.position').value,
         toolbarItems: this.popupToolbarItems.value,
-        showCloseButton: this.isMaterialOrGeneric(),
         onHidden: () => {
           var _this$toolbarButtonEl;
           this.popupVisible.value = false;
@@ -70795,9 +70969,6 @@ class ColumnChooserView extends _view.View {
         onPlaceholderPrepared: this.columnChooserController.onPlaceholderPrepared
       }
     }));
-  }
-  isMaterialOrGeneric() {
-    return (0, _themes.isMaterial)((0, _themes.current)()) || (0, _themes.isGeneric)((0, _themes.current)());
   }
 }
 exports.ColumnChooserView = ColumnChooserView;
@@ -72137,8 +72308,8 @@ var _promise = __webpack_require__(51413);
 var _columns_controller = __webpack_require__(88195);
 var _filter_controller = __webpack_require__(24628);
 var _options_controller = __webpack_require__(76385);
-var _sorting_controller = __webpack_require__(93689);
-var _index = __webpack_require__(84363);
+var _index = __webpack_require__(37386);
+var _index2 = __webpack_require__(84363);
 var _utils = __webpack_require__(99277);
 const _excluded = ["skip", "take"];
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -72350,7 +72521,7 @@ class DataController {
     return this.loadedPromise.promise;
   }
   getStoreLoadAdapter() {
-    return new _index.StoreLoadAdapter(this.dataSource, this.normalizedLocalOperations,
+    return new _index2.StoreLoadAdapter(this.dataSource, this.normalizedLocalOperations,
     // NOTE: Badly typed ArrayStore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     data => new _array_store.default(data));
@@ -72388,7 +72559,7 @@ class DataController {
   }
 }
 exports.DataController = DataController;
-DataController.dependencies = [_columns_controller.ColumnsController, _options_controller.OptionsController, _sorting_controller.SortingController, _filter_controller.FilterController];
+DataController.dependencies = [_columns_controller.ColumnsController, _options_controller.OptionsController, _index.SortingController, _filter_controller.FilterController];
 
 /***/ }),
 
@@ -72763,10 +72934,11 @@ Object.defineProperty(exports, "__esModule", ({
 }));
 exports.register = register;
 var _index = __webpack_require__(61519);
+var _controller = __webpack_require__(95569);
 var ColumnChooserModule = _interopRequireWildcard(__webpack_require__(45415));
 var ColumnsControllerModule = _interopRequireWildcard(__webpack_require__(50875));
 var DataControllerModule = _interopRequireWildcard(__webpack_require__(61124));
-var _controller = __webpack_require__(64629);
+var _controller2 = __webpack_require__(64629);
 var _view = __webpack_require__(32643);
 var _error_controller = __webpack_require__(67921);
 var FilterSyncModule = _interopRequireWildcard(__webpack_require__(69900));
@@ -72780,11 +72952,11 @@ var _items_controller = __webpack_require__(58761);
 var _index8 = __webpack_require__(58529);
 var _index9 = __webpack_require__(8927);
 var _view2 = __webpack_require__(93825);
-var _controller2 = __webpack_require__(28355);
+var _controller3 = __webpack_require__(28355);
 var _view3 = __webpack_require__(29366);
 var SelectionControllerModule = _interopRequireWildcard(__webpack_require__(99779));
 var SortingControllerModule = _interopRequireWildcard(__webpack_require__(37386));
-var _controller3 = __webpack_require__(34272);
+var _controller4 = __webpack_require__(34272);
 var _view4 = __webpack_require__(5061);
 function _getRequireWildcardCache(e) { if ("function" != typeof WeakMap) return null; var r = new WeakMap(), t = new WeakMap(); return (_getRequireWildcardCache = function (e) { return e ? t : r; })(e); }
 function _interopRequireWildcard(e, r) { if (!r && e && e.__esModule) return e; if (null === e || "object" != typeof e && "function" != typeof e) return { default: e }; var t = _getRequireWildcardCache(r); if (t && t.has(e)) return t.get(e); var n = { __proto__: null }, a = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var u in e) if ("default" !== u && {}.hasOwnProperty.call(e, u)) { var i = a ? Object.getOwnPropertyDescriptor(e, u) : null; i && (i.get || i.set) ? Object.defineProperty(n, u, i) : n[u] = e[u]; } return n.default = e, t && t.set(e, n), n; }
@@ -72796,10 +72968,10 @@ function register(diContext) {
   diContext.register(SelectionControllerModule.Controller);
   diContext.register(ColumnsControllerModule.CompatibilityColumnsController);
   diContext.register(SortingControllerModule.SortingController);
-  diContext.register(_controller3.ToolbarController);
+  diContext.register(_controller4.ToolbarController);
   diContext.register(_view4.ToolbarView);
   diContext.register(_view2.PagerView);
-  diContext.register(_controller2.SearchController);
+  diContext.register(_controller3.SearchController);
   diContext.register(_view3.SearchView);
   diContext.register(ColumnChooserModule.ColumnChooserController);
   diContext.register(ColumnChooserModule.ColumnChooserView);
@@ -72811,7 +72983,7 @@ function register(diContext) {
   diContext.register(FilterSyncModule.CompatibilityFilterSyncController);
   diContext.register(_index6.CompatibilityHeaderFilterController);
   diContext.register(_error_controller.ErrorController);
-  diContext.register(_controller.EditingController);
+  diContext.register(_controller2.EditingController);
   diContext.register(_view.EditPopupView);
   diContext.register(_index.SearchUIController);
   diContext.register(_view3.SearchView);
@@ -72820,6 +72992,7 @@ function register(diContext) {
   diContext.register(_get_applied_filters_visitor.GetAppliedFilterVisitor);
   diContext.register(_filter_custom_operations_visitor.FilterCustomOperationsVisitor);
   diContext.register(_index8.KeyboardNavigationController);
+  diContext.register(_controller.AccessibilityController);
   diContext.register(_index9.OptionsValidationController);
 }
 
@@ -73864,6 +74037,10 @@ class FilterCustomOperationsVisitor {
           const columns = this.columnsController.columns.peek();
           return (0, _utils.getColumnByIndexOrName)(columns, columnName);
         },
+        /*
+          Note: Root headerFilter options are used because the legacy code handles retrieving
+          options for specific columns on its own
+        */
         getHeaderFilterOptions: () => this.options.oneWay('headerFilter').peek(),
         headerFilterController: this.headerFilterController
       };
@@ -73919,12 +74096,18 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.CompatibilityHeaderFilterController = void 0;
+var _index = __webpack_require__(61124);
+var _options_controller = __webpack_require__(76385);
 var _filter_controller = __webpack_require__(24628);
+var _legacy_header_filter = __webpack_require__(65518);
 var _view_controller = __webpack_require__(58814);
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 class CompatibilityHeaderFilterController {
-  constructor(realFilterController, realHeaderFilterViewController) {
+  constructor(realFilterController, realHeaderFilterViewController, realDataController, options) {
     this.realFilterController = realFilterController;
     this.realHeaderFilterViewController = realHeaderFilterViewController;
+    this.realDataController = realDataController;
+    this.options = options;
   }
   getCustomFilterOperations() {
     return this.realFilterController.customOperations.peek();
@@ -73935,9 +74118,24 @@ class CompatibilityHeaderFilterController {
   hideHeaderFilterMenu() {
     this.realHeaderFilterViewController.closePopup();
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getDataSource(column) {
+    const adapter = this.realDataController.getStoreLoadAdapter();
+    const popupOptions = {
+      column: _extends({}, column),
+      filterType: column.filterType,
+      filterValues: column.filterValues
+    };
+    /*
+      Note: Root headerFilter options are used because the legacy code handles retrieving
+      options for specific columns on its own
+    */
+    const rootHeaderFilterOptions = this.options.oneWay('headerFilter').peek();
+    return (0, _legacy_header_filter.getDataSourceOptions)(adapter, popupOptions, rootHeaderFilterOptions, null);
+  }
 }
 exports.CompatibilityHeaderFilterController = CompatibilityHeaderFilterController;
-CompatibilityHeaderFilterController.dependencies = [_filter_controller.FilterController, _view_controller.HeaderFilterViewController];
+CompatibilityHeaderFilterController.dependencies = [_filter_controller.FilterController, _view_controller.HeaderFilterViewController, _index.DataController, _options_controller.OptionsController];
 
 /***/ }),
 
@@ -74413,6 +74611,10 @@ class HeaderFilterViewController {
   }
   openPopup(element, column, onFilterCloseCallback, customApply, isFilterBuilder) {
     const rootDataSource = this.dataController.getStoreLoadAdapter();
+    /*
+      Note: Root headerFilter options are used because the legacy code handles retrieving
+      options for specific columns on its own
+    */
     const rootHeaderFilterOptions = this.options.oneWay('headerFilter').peek();
     const filterExpression = this.getFilterExpressionWithoutCurrentColumn(column);
     const type = (0, _legacy_header_filter.getHeaderFilterListType)(column);
@@ -77667,81 +77869,7 @@ function PublicMethods(GridCore) {
 
 /***/ }),
 
-/***/ 37386:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-Object.defineProperty(exports, "PublicMethods", ({
-  enumerable: true,
-  get: function () {
-    return _public_methods.PublicMethods;
-  }
-}));
-Object.defineProperty(exports, "SortingController", ({
-  enumerable: true,
-  get: function () {
-    return _sorting_controller.SortingController;
-  }
-}));
-Object.defineProperty(exports, "defaultOptions", ({
-  enumerable: true,
-  get: function () {
-    return _options.defaultOptions;
-  }
-}));
-var _options = __webpack_require__(63684);
-var _public_methods = __webpack_require__(20371);
-var _sorting_controller = __webpack_require__(93689);
-
-/***/ }),
-
-/***/ 63684:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.defaultOptions = void 0;
-var _message = _interopRequireDefault(__webpack_require__(33881));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-const defaultOptions = exports.defaultOptions = {
-  sorting: {
-    ascendingText: _message.default.format('dxDataGrid-sortingAscendingText'),
-    descendingText: _message.default.format('dxDataGrid-sortingDescendingText'),
-    clearText: _message.default.format('dxDataGrid-sortingClearText'),
-    mode: 'single',
-    showSortIndexes: true
-  }
-};
-
-/***/ }),
-
-/***/ 20371:
-/***/ (function(__unused_webpack_module, exports) {
-
-
-
-Object.defineProperty(exports, "__esModule", ({
-  value: true
-}));
-exports.PublicMethods = PublicMethods;
-function PublicMethods(GridCore) {
-  return class GridCoreWithSortingController extends GridCore {
-    clearSorting() {
-      this.sortingController.clearSorting();
-    }
-  };
-}
-
-/***/ }),
-
-/***/ 93689:
+/***/ 37868:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -77846,11 +77974,13 @@ class SortingController {
       return;
     }
     const isClearSortingRequired = !column.sortOrder && !isCtrl || this.sortedColumns.peek().length > 1;
-    if (isClearSortingRequired) {
-      this.clearSorting();
-    }
     const nextSortOrder = (0, _utils2.getNextSortOrder)(column.sortOrder, isCtrl);
-    this.columnsController.columnOption(column, 'sortOrder', nextSortOrder);
+    (0, _signalsCore.batch)(() => {
+      if (isClearSortingRequired) {
+        this.clearSorting();
+      }
+      this.columnsController.columnOption(column, 'sortOrder', nextSortOrder);
+    });
   }
   onMultipleModeSortClick(column, e) {
     if (!column.allowSorting) {
@@ -77863,12 +77993,14 @@ class SortingController {
     }
     const nextSortOrder = (0, _utils2.getNextSortOrder)(column.sortOrder, isCtrl);
     const isClearSortingRequired = !isCtrl && !e.shiftKey;
-    if (isClearSortingRequired) {
-      this.clearSorting();
-    }
-    // TODO: Resolve the nested update issue
-    // this.columnsController.columnOption(column, 'sortOrder', nextSortOrder);
-    this.updateColumnSortOrder(column, nextSortOrder);
+    (0, _signalsCore.batch)(() => {
+      if (isClearSortingRequired) {
+        this.clearSorting();
+      }
+      // TODO: Resolve the nested update issue
+      // this.columnsController.columnOption(column, 'sortOrder', nextSortOrder);
+      this.updateColumnSortOrder(column, nextSortOrder);
+    });
   }
   updateColumnSortOrder(column, nextSortOrder) {
     const needChanges = this.mode.peek() === 'multiple';
@@ -77910,6 +78042,80 @@ class SortingController {
 }
 exports.SortingController = SortingController;
 SortingController.dependencies = [_options_controller.OptionsController, _index.ColumnsController];
+
+/***/ }),
+
+/***/ 37386:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+Object.defineProperty(exports, "PublicMethods", ({
+  enumerable: true,
+  get: function () {
+    return _public_methods.PublicMethods;
+  }
+}));
+Object.defineProperty(exports, "SortingController", ({
+  enumerable: true,
+  get: function () {
+    return _controller.SortingController;
+  }
+}));
+Object.defineProperty(exports, "defaultOptions", ({
+  enumerable: true,
+  get: function () {
+    return _options.defaultOptions;
+  }
+}));
+var _controller = __webpack_require__(37868);
+var _options = __webpack_require__(63684);
+var _public_methods = __webpack_require__(20371);
+
+/***/ }),
+
+/***/ 63684:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.defaultOptions = void 0;
+var _message = _interopRequireDefault(__webpack_require__(33881));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+const defaultOptions = exports.defaultOptions = {
+  sorting: {
+    ascendingText: _message.default.format('dxDataGrid-sortingAscendingText'),
+    descendingText: _message.default.format('dxDataGrid-sortingDescendingText'),
+    clearText: _message.default.format('dxDataGrid-sortingClearText'),
+    mode: 'single',
+    showSortIndexes: true
+  }
+};
+
+/***/ }),
+
+/***/ 20371:
+/***/ (function(__unused_webpack_module, exports) {
+
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.PublicMethods = PublicMethods;
+function PublicMethods(GridCore) {
+  return class GridCoreWithSortingController extends GridCore {
+    clearSorting() {
+      this.sortingController.clearSorting();
+    }
+  };
+}
 
 /***/ }),
 
@@ -78487,6 +78693,7 @@ var _index = __webpack_require__(87752);
 var _m_inferno_renderer = __webpack_require__(21327);
 var _view = __webpack_require__(29366);
 var _inferno = __webpack_require__(76231);
+var _index2 = __webpack_require__(8197);
 var ColumnChooserModule = _interopRequireWildcard(__webpack_require__(45415));
 var _compatibility = __webpack_require__(66551);
 var ColumnsControllerModule = _interopRequireWildcard(__webpack_require__(50875));
@@ -78495,11 +78702,11 @@ var di = _interopRequireWildcard(__webpack_require__(3955));
 var _controller = __webpack_require__(64629);
 var _view2 = __webpack_require__(32643);
 var _error_controller = __webpack_require__(67921);
-var _index5 = __webpack_require__(69900);
+var _index6 = __webpack_require__(69900);
 var _clear_filter_visitor = __webpack_require__(81679);
 var _filter_custom_operations_visitor = __webpack_require__(57652);
 var _get_applied_filters_visitor = __webpack_require__(6983);
-var _index6 = __webpack_require__(63108);
+var _index7 = __webpack_require__(63108);
 var _view_controller = __webpack_require__(58814);
 var FilterControllerModule = _interopRequireWildcard(__webpack_require__(92743));
 var _items_controller = __webpack_require__(58761);
@@ -78522,7 +78729,7 @@ class GridCoreNewBase extends _ui.default {
     di.register(this.diContext);
   }
   _initWidgetMock() {
-    this.diContext.registerInstance(_widget_mock.WidgetMock, new _widget_mock.WidgetMock(this, this.diContext.get(DataControllerModule.CompatibilityDataController), this.diContext.get(_compatibility.CompatibilityColumnsController), this.diContext.get(_index6.CompatibilityHeaderFilterController), this.diContext.get(_index5.CompatibilityFilterSyncController)));
+    this.diContext.registerInstance(_widget_mock.WidgetMock, new _widget_mock.WidgetMock(this, this.diContext.get(DataControllerModule.CompatibilityDataController), this.diContext.get(_compatibility.CompatibilityColumnsController), this.diContext.get(_index7.CompatibilityHeaderFilterController), this.diContext.get(_index6.CompatibilityFilterSyncController)));
   }
   _initDIContext() {
     this.dataController = this.diContext.get(DataControllerModule.DataController);
@@ -78540,10 +78747,11 @@ class GridCoreNewBase extends _ui.default {
     this.columnChooserView = this.diContext.get(ColumnChooserModule.ColumnChooserView);
     this.errorController = this.diContext.get(_error_controller.ErrorController);
     this.filterController = this.diContext.get(FilterControllerModule.FilterController);
-    this.headerFilterController = this.diContext.get(_index6.HeaderFilterController);
+    this.headerFilterController = this.diContext.get(_index7.HeaderFilterController);
     this.filterPanelView = this.diContext.get(FilterControllerModule.FilterPanelView);
     this.headerFilterViewController = this.diContext.get(_view_controller.HeaderFilterViewController);
-    this.filterSyncController = this.diContext.get(_index5.FilterSyncController);
+    this.accessibilityController = this.diContext.get(_index2.AccessibilityController);
+    this.filterSyncController = this.diContext.get(_index6.FilterSyncController);
     this.searchView = this.diContext.get(_view.SearchView);
     this.clearFilterVisitor = this.diContext.get(_clear_filter_visitor.ClearFilterVisitor);
     this.getAppliedFiltersVisitor = this.diContext.get(_get_applied_filters_visitor.GetAppliedFilterVisitor);
@@ -103259,6 +103467,7 @@ class RecurrenceEditor extends _editor.default {
     this._$container = (0, _renderer.default)('<div>').addClass(RECURRENCE_EDITOR_CONTAINER).appendTo(this.$element());
     this._prepareEditors();
     this._renderEditors(this._$container);
+    this._updateRepeatInputAriaLabel();
   }
   getEditorByField(fieldName) {
     let editor = this.getRecurrenceForm().getEditor(fieldName);
@@ -103563,6 +103772,7 @@ class RecurrenceEditor extends _editor.default {
       this._recurrenceRule.makeRule('until', '');
     }
     this._changeEditorValue();
+    this._updateRepeatInputAriaLabel();
   }
   _changeRepeatEndInputsVisibility() {
     let value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._recurrenceRule.getRepeatEndRule();
@@ -103604,6 +103814,19 @@ class RecurrenceEditor extends _editor.default {
       }
     };
   }
+  _updateRepeatInputAriaLabel() {
+    const radioButtons = this.getEditorByField('repeatEnd').itemElements();
+    const untilLabel = _message.default.format('dxScheduler-recurrenceOn');
+    const untilValue = this._recurrenceForm.getEditor('until').option('value');
+    const untilValueFormat = `${_date.default.format(untilValue, 'd')} ${_date.default.format(untilValue, 'monthAndYear')}`;
+    const isUntilVisible = this._recurrenceForm.itemOption('until').visible;
+    const countLabel = _message.default.format('dxScheduler-recurrenceAfter');
+    const countPostfix = _message.default.format('dxScheduler-recurrenceRepeatCount');
+    const countValue = this._recurrenceForm.getEditor('count').option('value');
+    const isCountVisible = this._recurrenceForm.itemOption('count').visible;
+    radioButtons[1].setAttribute('aria-label', isUntilVisible ? `${untilLabel} ${untilValueFormat}` : untilLabel);
+    radioButtons[2].setAttribute('aria-label', isCountVisible ? `${countLabel} ${countValue} ${countPostfix}` : countLabel);
+  }
   _repeatCountValueChangeHandler(args) {
     if (this._recurrenceRule.getRepeatEndRule() === 'count') {
       const {
@@ -103611,13 +103834,8 @@ class RecurrenceEditor extends _editor.default {
       } = args;
       this._recurrenceRule.makeRule('count', value);
       this._changeEditorValue();
+      this._updateRepeatInputAriaLabel();
     }
-  }
-  _formatUntilDate(date) {
-    if (this._recurrenceRule.getRules().until && _date2.default.sameDate(this._recurrenceRule.getRules().until, date)) {
-      return date;
-    }
-    return _date2.default.setToDayEnd(date);
   }
   _getRepeatUntilEditorOptions() {
     const until = this._getUntilValue();
@@ -103645,6 +103863,11 @@ class RecurrenceEditor extends _editor.default {
       }
     };
   }
+  _formatUntilDate(date) {
+    const untilDate = this._recurrenceRule.getRules().until;
+    const isSameDate = _date2.default.sameDate(untilDate, date);
+    return untilDate && isSameDate ? date : _date2.default.setToDayEnd(date);
+  }
   _repeatUntilValueChangeHandler(args) {
     if (this._recurrenceRule.getRepeatEndRule() === 'until') {
       const dateInTimeZone = this._formatUntilDate(new Date(args.value));
@@ -103657,6 +103880,7 @@ class RecurrenceEditor extends _editor.default {
       });
       this._recurrenceRule.makeRule('until', dateInLocaleTimeZone);
       this._changeEditorValue();
+      this._updateRepeatInputAriaLabel();
     }
   }
   _valueChangedHandler(args) {
@@ -134390,6 +134614,9 @@ class DateBoxMask extends _m_date_box.default {
       this._selectNextPart(FORWARD);
     }
   }
+  _hasMouseWheelHandler() {
+    return true;
+  }
   _onMouseWheel(e) {
     if (this._useMaskBehavior()) {
       this._partIncrease(e.delta > 0 ? FORWARD : BACKWARD, e);
@@ -153382,6 +153609,8 @@ var _widget = _interopRequireDefault(__webpack_require__(89275));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 const INFORMER_CLASS = exports.INFORMER_CLASS = 'dx-informer';
+const INFORMER_ERROR_CLASS = 'dx-informer-error';
+const INFORMER_INFO_CLASS = 'dx-informer-info';
 const INFORMER_ALIGNMENT_START_CLASS = 'dx-informer-alignment-start';
 const INFORMER_ALIGNMENT_CENTER_CLASS = 'dx-informer-alignment-center';
 const INFORMER_ALIGNMENT_END_CLASS = 'dx-informer-alignment-end';
@@ -153394,7 +153623,8 @@ class Informer extends _widget.default {
       contentAlignment: 'center',
       icon: '',
       showBackground: true,
-      text: ''
+      text: '',
+      type: 'error'
     });
   }
   _initMarkup() {
@@ -153404,6 +153634,7 @@ class Informer extends _widget.default {
     this.$element().addClass(INFORMER_CLASS);
     this.$element().toggleClass(INFORMER_BG_CLASS, showBackground);
     this._setAlignmentClass();
+    this._setTypeClass();
     super._initMarkup();
     this._renderIcon();
     this._renderText();
@@ -153423,6 +153654,21 @@ class Informer extends _widget.default {
       case 'center':
       default:
         this.$element().addClass(INFORMER_ALIGNMENT_CENTER_CLASS);
+        break;
+    }
+  }
+  _setTypeClass() {
+    this.$element().removeClass(INFORMER_ERROR_CLASS).removeClass(INFORMER_INFO_CLASS);
+    const {
+      type
+    } = this.option();
+    switch (type) {
+      case 'info':
+        this.$element().addClass(INFORMER_INFO_CLASS);
+        break;
+      case 'error':
+      default:
+        this.$element().addClass(INFORMER_ERROR_CLASS);
         break;
     }
   }
@@ -153467,6 +153713,9 @@ class Informer extends _widget.default {
         break;
       case 'text':
         this._updateText();
+        break;
+      case 'type':
+        this._setTypeClass();
         break;
       default:
         super._optionChanged(args);
@@ -174266,6 +174515,9 @@ class NumberBoxBase extends _m_text_editor.default {
     }
     this._keyPressed = true;
   }
+  _hasMouseWheelHandler() {
+    return true;
+  }
   _onMouseWheel(dxEvent) {
     dxEvent.delta > 0 ? this._spinValueChange(1, dxEvent) : this._spinValueChange(-1, dxEvent);
   }
@@ -179374,6 +179626,13 @@ class PopupPositionController extends _m_overlay_position_controller.OverlayPosi
       super.positionContent();
     }
   }
+  _normalizePosition(positionProp) {
+    const normalizedPosition = super._normalizePosition(positionProp);
+    if (this._props.fullScreen) {
+      normalizedPosition.of = 'window';
+    }
+    return normalizedPosition;
+  }
   _updateDragResizeContainer() {
     this._$dragResizeContainer = this._getDragResizeContainer();
   }
@@ -184425,19 +184684,12 @@ class DeferredStrategy extends _m_selection.default {
   }
   isItemKeySelected(itemData) {
     const {
-      selectionFilter,
-      sensitivity
+      selectionFilter
     } = this.options;
     if (!selectionFilter) {
       return true;
     }
-    const queryParams = {
-      langParams: {
-        collatorOptions: {
-          sensitivity
-        }
-      }
-    };
+    const queryParams = this._getQueryParams();
     // @ts-expect-error
     return !!(0, _query.default)([itemData], queryParams).filter(selectionFilter).toArray().length;
   }
@@ -184679,6 +184931,7 @@ var _common = __webpack_require__(17781);
 var _deferred = __webpack_require__(87739);
 var _type = __webpack_require__(11528);
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
 class SelectionStrategy {
   constructor(options) {
     this._lastSelectAllPageDeferred = (0, _deferred.Deferred)().reject();
@@ -184783,14 +185036,30 @@ class SelectionStrategy {
     }
     return remoteFilter;
   }
+  _getQueryParams() {
+    const {
+      sensitivity
+    } = this.options;
+    if (!sensitivity) {
+      return;
+    }
+    return {
+      langParams: {
+        collatorOptions: {
+          sensitivity
+        }
+      }
+    };
+  }
   _loadFilteredData(remoteFilter, localFilter, select, isSelectAll) {
     const filterLength = encodeURI(JSON.stringify(this._removeTemplateProperty(remoteFilter))).length;
     const needLoadAllData = this.options.maxFilterLengthInRequest && filterLength > this.options.maxFilterLengthInRequest;
     const deferred = (0, _deferred.Deferred)();
-    const loadOptions = {
+    const queryParams = this._getQueryParams();
+    const loadOptions = _extends({
       filter: needLoadAllData ? undefined : remoteFilter,
       select: needLoadAllData ? this.options.dataFields() : select || this.options.dataFields()
-    };
+    }, queryParams);
     if (remoteFilter && remoteFilter.length === 0) {
       deferred.resolve([]);
     } else {
@@ -189514,6 +189783,14 @@ class TabPanel extends _m_multi_view.default {
     this._tabs = this._createComponent($tabs, _tabs.default, this._tabConfig());
     this._$container = (0, _renderer.default)('<div>').addClass(TABPANEL_CONTAINER_CLASS).appendTo($element);
     this._$container.append(this._$wrapper);
+    const {
+      selectedIndex
+    } = this.option();
+    // @ts-expect-error ts-error
+    const selectedItem = this._tabs.itemElements().get(selectedIndex);
+    this._tabs.option({
+      focusedElement: selectedItem
+    });
   }
   _refreshActiveDescendant() {
     if (!this._tabs) {
@@ -191952,7 +192229,6 @@ var _wheel = __webpack_require__(37373);
 var _index = __webpack_require__(98834);
 var _message = _interopRequireDefault(__webpack_require__(4671));
 var _renderer = _interopRequireDefault(__webpack_require__(64553));
-var _common = __webpack_require__(17781);
 var _extend = __webpack_require__(52576);
 var _iterator = __webpack_require__(21274);
 var _string = __webpack_require__(54497);
@@ -192042,8 +192318,7 @@ class TextEditorMask extends _m_text_editor.default {
     super._initMarkup();
   }
   _attachMouseWheelEventHandlers() {
-    const hasMouseWheelHandler = this._onMouseWheel !== _common.noop;
-    if (!hasMouseWheelHandler) {
+    if (!this._hasMouseWheelHandler()) {
       return;
     }
     const input = this._input();
@@ -192065,6 +192340,9 @@ class TextEditorMask extends _m_text_editor.default {
         event: e
       });
     });
+  }
+  _hasMouseWheelHandler() {
+    return false;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _onMouseWheel(e) {}
@@ -195107,7 +195385,7 @@ class SingleLineStrategy {
       const $item = overflowItems.eq(-1);
       $item.addClass(TOOLBAR_HIDDEN_ITEM);
       itemsWidth = this._getItemsWidth();
-      overflowItems.splice(-1, 1);
+      [].splice.apply(overflowItems, [-1, 1]);
     }
   }
   _getItemsWidth() {
@@ -219680,6 +219958,13 @@ const defaultMessages = exports.defaultMessages = {
     "dxCardView-ariaHeaderItemSortingDescendingLabel": "Sorted in descending order",
     "dxCardView-ariaHeaderItemSortingIndexLabel": "Sort index {0}",
     "dxCardView-ariaHeaderHasHeaderFilterLabel": "Header filter applied",
+    "dxCardView-ariaSelectCard": "Select card",
+    "dxCardView-ariaCardView": "Card view with {0} cards. Each card has {1} fields",
+    "dxCardView-ariaCard": "Card",
+    "dxCardView-ariaEditableCard": "Editable card",
+    "dxCardView-ariaCardPosition": "Row {0}, column {1}",
+    "dxCardView-ariaSelectedCardState": "Selected",
+    "dxCardView-ariaNotSelectedCardState": "Not selected",
     "dxCardView-selectAll": "Select all",
     "dxCardView-clearSelection": "Clear selection",
     "dxCardView-cardNoImageAriaLabel": "No image",
@@ -263069,8 +263354,8 @@ exports.ChartTracker = ChartTracker;
     }
     return null;
   },
-  _isPointerOut: function (canvas) {
-    return !canvas && this._stuckSeries;
+  _isPointerOut: function (canvas, point) {
+    return !canvas && this._stuckSeries && (point === null || point === void 0 ? void 0 : point.series) !== this._stuckSeries;
   },
   _hideCrosshair: function () {
     var _this$_crosshair;
@@ -271694,6 +271979,7 @@ const plugin = exports.plugin = {
 
 exports.plugin = exports.Tooltip = void 0;
 var _size = __webpack_require__(57653);
+var _style = __webpack_require__(58515);
 var _dom_adapter = _interopRequireDefault(__webpack_require__(64960));
 var _window = __webpack_require__(3104);
 var _dom = __webpack_require__(86858);
@@ -271964,7 +272250,8 @@ Tooltip.prototype = {
     // text area
     const normalizedCSS = {};
     for (const name in that._textFontStyles) {
-      normalizedCSS[(0, _inflector.camelize)(name)] = that._textFontStyles[name];
+      const normalizedName = (0, _inflector.camelize)(name);
+      normalizedCSS[normalizedName] = (0, _style.normalizeStyleProp)(normalizedName, that._textFontStyles[name]);
     }
     that._textGroupHtml.css(normalizedCSS);
     that._text.css(that._textFontStyles);
