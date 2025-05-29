@@ -44,3 +44,8 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.1 Chat.Editing context menu research mobile behavior
 
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/chat-context-menu-research/js/dx.all.js
+
+
+### 25.1 T1287462 (Toolbar: Preventing overflow menu from closing on DropDownButton click)
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1287462/js/dx.all.js
