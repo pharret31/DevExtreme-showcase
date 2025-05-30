@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.all.js)
 * Version: 25.1.2
-* Build date: Thu May 29 2025
+* Build date: Fri May 30 2025
 *
 * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -159383,7 +159383,7 @@ var _default = exports["default"] = DropDownBox;
 Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
-exports["default"] = void 0;
+exports["default"] = exports.DROP_DOWN_BUTTON_CLASS = void 0;
 var _message = _interopRequireDefault(__webpack_require__(4671));
 var _component_registrator = _interopRequireDefault(__webpack_require__(92848));
 var _element = __webpack_require__(61404);
@@ -159404,7 +159404,7 @@ var _m_utils = __webpack_require__(6807);
 var _m_popup = _interopRequireDefault(__webpack_require__(43864));
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 function _extends() { return _extends = Object.assign ? Object.assign.bind() : function (n) { for (var e = 1; e < arguments.length; e++) { var t = arguments[e]; for (var r in t) ({}).hasOwnProperty.call(t, r) && (n[r] = t[r]); } return n; }, _extends.apply(null, arguments); }
-const DROP_DOWN_BUTTON_CLASS = 'dx-dropdownbutton';
+const DROP_DOWN_BUTTON_CLASS = exports.DROP_DOWN_BUTTON_CLASS = 'dx-dropdownbutton';
 const DROP_DOWN_BUTTON_CONTENT = 'dx-dropdownbutton-content';
 const DROP_DOWN_BUTTON_ACTION_CLASS = 'dx-dropdownbutton-action';
 const DROP_DOWN_BUTTON_TOGGLE_CLASS = 'dx-dropdownbutton-toggle';
@@ -194515,7 +194515,7 @@ class ToolbarMenuList extends _m_list.ListBase {
   _init() {
     super._init();
     this._activeStateUnit = `.${TOOLBAR_MENU_ACTION_CLASS}:not(.${TOOLBAR_HIDDEN_BUTTON_GROUP_CLASS})`;
-    this._expandableComponents = ['dxDropDownButton'];
+    this._nonActionableComponents = ['dxDropDownButton', 'dxSelectBox', 'dxNumberBox', 'dxColorBox'];
   }
   _initMarkup() {
     this._renderSections();
@@ -194553,13 +194553,13 @@ class ToolbarMenuList extends _m_list.ListBase {
     $sections.not(':empty').eq(-1).addClass(TOOLBAR_MENU_LAST_SECTION_CLASS);
   }
   _renderItem(index, item, itemContainer, $after) {
-    const $container = this[`_$${item.location}Section`];
+    const $container = this[`_$${item.location ?? 'menu'}Section`];
     const itemElement = super._renderItem(index, item, $container, $after);
-    const itemElementClasses = this._getItemElementCssClasses(item);
-    itemElement.addClass(itemElementClasses.join(' '));
+    const itemCssClasses = this._getItemCssClasses(item);
+    itemElement.addClass(itemCssClasses.join(' '));
     return itemElement;
   }
-  _getItemElementCssClasses(item) {
+  _getItemCssClasses(item) {
     const location = item.location ?? 'menu';
     const cssClasses = [];
     if (item.cssClass) {
@@ -194570,7 +194570,7 @@ class ToolbarMenuList extends _m_list.ListBase {
     })) {
       cssClasses.push(TOOLBAR_MENU_CUSTOM_CLASS);
     }
-    if (this._expandableComponents.includes(item.widget)) {
+    if (this._nonActionableComponents.includes(item.widget)) {
       return cssClasses;
     }
     if (location === 'menu' || item.widget === 'dxButton' || item.widget === 'dxButtonGroup' || item.isAction) {
