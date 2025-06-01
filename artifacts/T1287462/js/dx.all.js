@@ -1,7 +1,7 @@
 /*!
 * DevExtreme (dx.all.js)
 * Version: 25.1.2
-* Build date: Fri May 30 2025
+* Build date: Sun Jun 01 2025
 *
 * Copyright (c) 2012 - 2025 Developer Express Inc. ALL RIGHTS RESERVED
 * Read about DevExtreme licensing here: https://js.devexpress.com/Licensing/
@@ -194515,7 +194515,6 @@ class ToolbarMenuList extends _m_list.ListBase {
   _init() {
     super._init();
     this._activeStateUnit = `.${TOOLBAR_MENU_ACTION_CLASS}:not(.${TOOLBAR_HIDDEN_BUTTON_GROUP_CLASS})`;
-    this._nonActionableComponents = ['dxDropDownButton', 'dxSelectBox', 'dxNumberBox', 'dxColorBox'];
   }
   _initMarkup() {
     this._renderSections();
@@ -194562,18 +194561,17 @@ class ToolbarMenuList extends _m_list.ListBase {
   _getItemCssClasses(item) {
     const location = item.location ?? 'menu';
     const cssClasses = [];
-    if (item.cssClass) {
-      cssClasses.push(item.cssClass);
-    }
+    const actionableComponents = this._getActionableComponents();
     if (this._getItemTemplateName({
       itemData: item
     })) {
       cssClasses.push(TOOLBAR_MENU_CUSTOM_CLASS);
     }
-    if (this._nonActionableComponents.includes(item.widget)) {
+    if (item.widget && !actionableComponents.includes(item.widget)) {
+      cssClasses.push(item.cssClass);
       return cssClasses;
     }
-    if (location === 'menu' || item.widget === 'dxButton' || item.widget === 'dxButtonGroup' || item.isAction) {
+    if (location === 'menu' || item.isAction || actionableComponents.includes(item.widget)) {
       cssClasses.push(TOOLBAR_MENU_ACTION_CLASS);
     }
     if (item.widget === 'dxButton') {
@@ -194582,7 +194580,11 @@ class ToolbarMenuList extends _m_list.ListBase {
     if (item.widget === 'dxButtonGroup') {
       cssClasses.push(TOOLBAR_HIDDEN_BUTTON_GROUP_CLASS);
     }
+    cssClasses.push(item.cssClass);
     return cssClasses;
+  }
+  _getActionableComponents() {
+    return ['dxButton', 'dxButtonGroup'];
   }
   _getItemTemplateName(args) {
     const template = super._getItemTemplateName(args);
