@@ -54,3 +54,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.1 TextBox: Design spike
 
 **[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/design-spike-textbox/css/dx.fluent.blue.light.css
+
+### 25.1 ContextMenu: Allow creating multiple context menus even if a target is a document or undefined
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/context-menu-multiple-without-target/js/dx.all.js
