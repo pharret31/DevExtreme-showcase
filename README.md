@@ -58,3 +58,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.1 ContextMenu: Allow creating multiple context menus even if a target is a document or undefined
 
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/context-menu-multiple-without-target/js/dx.all.js
+
+### 25.1 List: Prevent radio button from remaining active after double-click if another radio button is selected
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1294715/js/dx.all.js
