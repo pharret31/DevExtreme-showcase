@@ -66,3 +66,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.1 Tabs: Rework scroll integration
 
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/tabs-rework-scroll-integration/js/dx.all.js
+
+### 25.1 SVG serialization
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/svg-serialization/js/dx.all.js
