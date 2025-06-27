@@ -69,4 +69,4 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 
 ### 25.1 SVG serialization
 
-**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/svg-serialization/js/dx.all.js
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/svg-serialization/js/dx.all.debug.js
