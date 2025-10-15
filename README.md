@@ -74,3 +74,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.2 RangeSelector: fix trackers for Firefox/Android
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/T1296261/js/dx.all.debug.js
+
+### 25.2 TreeView: shift selection without checkboxes
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/tree-view-shift-selection/js/dx.all.debug.js
