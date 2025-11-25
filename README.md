@@ -78,3 +78,9 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### 25.2 TreeView: shift selection without checkboxes
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/tree-view-shift-selection/js/dx.all.debug.js
+
+### [Research] 25.2 ScrollView: scrollable region must have keyboard access in native strategy
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/scrollview-native-keyboard-access/js/dx.all.debug.js
+
+**[prevent-js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/scrollview-native-keyboard-access/js-prevent/dx.all.debug.js]
