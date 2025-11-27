@@ -84,3 +84,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/scrollview-native-keyboard-access/js/dx.all.debug.js
 
 **[prevent-js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/scrollview-native-keyboard-access/js-prevent/dx.all.debug.js]
+
+### [Research] 25.2 TreeView: add allowSelect option to items
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-nodes-selection/js/dx.all.debug.js
