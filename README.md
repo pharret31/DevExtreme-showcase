@@ -88,3 +88,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [Research] 25.2 TreeView: add allowSelect option to items
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-nodes-selection/js/dx.all.debug.js
+
+### [Research] 26.1 Form: Validation summary accessibility
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-validation-summary/js/dx.all.debug.js
