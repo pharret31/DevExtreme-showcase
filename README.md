@@ -92,3 +92,4 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [Research] 26.1 Form: Validation summary accessibility
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-validation-summary/js/dx.all.debug.js
+**[js-debug-hidden-container]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-validation-summary/hidden-container/dx.all.debug.js
