@@ -93,3 +93,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-validation-summary/js/dx.all.debug.js
 **[js-debug-hidden-container]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-validation-summary/hidden-container/dx.all.debug.js
+
+### [Feature] 26.2 TreeView: provide a way to control ability to select nodes
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-control-selection/js/dx.all.debug.js
