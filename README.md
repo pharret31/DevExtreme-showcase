@@ -101,3 +101,4 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [Feature REVIEW] 26.2 TreeView: provide a way to control ability to select nodes
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-control-selection-review/js/dx.all.debug.js
+**[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-control-selection-review/css/dx.fluent.blue.light.css
