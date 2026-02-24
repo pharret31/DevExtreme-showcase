@@ -102,3 +102,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-control-selection-review/js/dx.all.debug.js
 **[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/treeview-control-selection-review/css/dx.fluent.blue.light.css
+
+### [SPIKE] 26.2 Form: partial update on dimension change
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-partial-update/js/dx.all.debug.js
