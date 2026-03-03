@@ -106,3 +106,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [SPIKE] 26.2 Form: partial update on dimension change
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/form-partial-update/js/dx.all.debug.js
+
+### [SPIKE] 26.2 List: allow selection/highlighting of text in an item
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/list-text-selection/js/dx.all.debug.js
