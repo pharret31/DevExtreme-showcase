@@ -110,3 +110,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [SPIKE] 26.2 List: allow selection/highlighting of text in an item
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/list-text-selection/js/dx.all.debug.js
+
+### [BUG] 26.2 Splitter: fix pane resizing on dimension change
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/js/dx.all.debug.js
