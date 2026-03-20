@@ -113,4 +113,5 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 
 ### [BUG] 26.2 Splitter: fix pane resizing on dimension change
 
-**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/js/dx.all.debug.js
+**[js-debug-initial]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/initial/js/dx.all.debug.js
+**[js-debug-uniform]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/uniform/js/dx.all.debug.js
