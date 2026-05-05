@@ -116,3 +116,7 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 **[js-debug-initial]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/initial/js/dx.all.debug.js
 **[js-debug-uniform]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/uniform/js/dx.all.debug.js
 **[js-debug-original]** https://pharret31.github.io/DevExtreme-showcase/artifacts/splitter-resize-on-dimension-change/26_1/js/dx.all.debug.js
+
+### [SPIKE] 26.2 Toolbar: keyboard navigation with dynamic item changes
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-spike/js/dx.all.debug.js
