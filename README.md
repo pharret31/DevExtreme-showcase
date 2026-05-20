@@ -120,3 +120,8 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 ### [SPIKE] 26.2 Toolbar: keyboard navigation with dynamic item changes
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-spike/js/dx.all.debug.js
+
+### [SPIKE] 26.2 Toolbar: keyboard navigation with outline on focus
+
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-focus-outline/js/dx.all.debug.js
+**[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-focus-outline/css/dx.fluent.blue.light.css
