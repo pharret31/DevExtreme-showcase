@@ -125,3 +125,10 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 
 **[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-focus-outline/js/dx.all.debug.js
 **[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/toolbar-kbn-focus-outline/css/dx.fluent.blue.light.css
+
+### 26.2 Toolbar: keyboard navigation according to APG
+
+**[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-toolbar-kbn-enhancements/js/dx.all.js
+**[js-debug]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-toolbar-kbn-enhancements/js/dx.all.debug.js
+**[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-toolbar-kbn-enhancements/css/dx.fluent.blue.light.css
+**[css-folder]** https://github.com/pharret31/DevExtreme-showcase/tree/main/artifacts/26-2-toolbar-kbn-enhancements/css
