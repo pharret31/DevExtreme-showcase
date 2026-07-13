@@ -213415,12 +213415,40 @@ class HtmlEditor extends _editor.default {
     };
   }
   _getKeyboardModuleConfig() {
-    // Tab/indent/outdent keyboard-trap fix (releasing plain-text Tab to the
-    // browser, unconditional list/blockquote indent-outdent) lives in
-    // devextreme-quill's Keyboard.DEFAULTS.bindings, not here: it's generic
-    // Quill editing behavior, not specific to the dxHtmlEditor widget.
     return {
-      onKeydown: e => this._saveValueChangeEvent((0, _events.Event)(e))
+      onKeydown: e => this._saveValueChangeEvent((0, _events.Event)(e)),
+      // Release Tab in plain contexts so the browser can move focus out
+      // of the contenteditable to the next tab stop (TinyMCE / CKEditor
+      // convention). Quill's catch-all `tab` default binding inserts a
+      // tab character and preventDefaults, trapping focus; setting it to
+      // null removes only that binding. Context-specific Tab handlers
+      // (indent/outdent in lists, blockquote, indent; code-block indent;
+      // table cell navigation) are registered by their own modules with
+      // format filters and keep working in those contexts.
+      //
+      // Override Quill's default `indent`/`outdent` handlers so Tab
+      // inside a list / blockquote / indented block always indents,
+      // regardless of caret offset. Quill's defaults only indent when
+      // caret is at offset 0 and otherwise return `true` (fall through);
+      // without the catch-all `tab` binding that fall-through would let
+      // Tab escape the editor mid-line, which is unexpected in a list.
+      bindings: {
+        tab: null,
+        indent: {
+          handler(_range, _context) {
+            // eslint-disable-next-line @typescript-eslint/no-invalid-this
+            this.quill.format('indent', '+1', 'user');
+            return false;
+          }
+        },
+        outdent: {
+          handler(_range, _context) {
+            // eslint-disable-next-line @typescript-eslint/no-invalid-this
+            this.quill.format('indent', '-1', 'user');
+            return false;
+          }
+        }
+      }
     };
   }
   _getClipboardConfig() {
