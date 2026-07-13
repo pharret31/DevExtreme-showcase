@@ -212969,7 +212969,7 @@ const HTML_EDITOR_CLASS = 'dx-htmleditor';
 const HTML_EDITOR_SUBMIT_ELEMENT_CLASS = 'dx-htmleditor-submit-element';
 const HTML_EDITOR_CONTENT_CLASS = 'dx-htmleditor-content';
 const HTML_EDITOR_TOOLBAR_WRAPPER_CLASS = 'dx-htmleditor-toolbar-wrapper';
-const TOOLBAR_FOCUSABLE_SELECTOR = 'button, [tabindex]:not([tabindex="-1"]), input, select, textarea, a[href]';
+const FOCUSABLE_ELEMENTS_SELECTOR = 'button, [tabindex]:not([tabindex="-1"]), input, select, textarea, a[href]';
 const ANONYMOUS_TEMPLATE_NAME = 'htmlContent';
 const isIos = _devices.default.current().platform === 'ios';
 let editorsCount = 0;
@@ -213190,7 +213190,54 @@ class HtmlEditor extends _editor.default {
         e.stopPropagation();
         this._focusContent();
       }
+      return;
     }
+    // Ctrl+Shift+ArrowDown / Ctrl+Shift+ArrowUp move focus out of the editor
+    // regardless of context. Unlike Tab, which is intercepted for list
+    // indent/outdent, table cell navigation and code-block indent, this
+    // shortcut always leaves the current context so keyboard users are
+    // never stuck inside a nested one. Plain Ctrl+Arrow is avoided because
+    // macOS reserves it for Mission Control / App Exposé and the keydown
+    // never reaches the browser.
+    if (e.key === 'ArrowDown' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+      e.preventDefault();
+      this._exitEditor(true);
+      return;
+    }
+    if (e.key === 'ArrowUp' && e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey) {
+      e.preventDefault();
+      this._exitEditor(false);
+    }
+  }
+  _exitEditor(forward) {
+    // Internal-only, undocumented option for comparing two candidate UX
+    // behaviors during development; not part of the public Properties type.
+    // true (default): Ctrl+Shift+Arrow always exits past the whole widget
+    // (toolbar + content), the same regardless of where focus currently is.
+    // false: behave like Tab/Shift+Tab would, landing on the nearest
+    // focusable neighbor of the *current* focus target — e.g. Ctrl+Shift+
+    // ArrowUp from the content lands in the toolbar rather than skipping it.
+    const options = this.option();
+    const exitsComponent = options.focusArrowExitsComponent !== false;
+    const referenceEl = exitsComponent ? this.$element().get(0) : _dom_adapter.default.getActiveElement();
+    if (!referenceEl) {
+      return;
+    }
+    const candidates = this._getFocusableElementsRelativeTo(referenceEl, !forward);
+    const target = forward ? candidates[0] : candidates[candidates.length - 1];
+    target === null || target === void 0 || target.focus();
+  }
+  _getFocusableElementsRelativeTo(referenceEl, preceding) {
+    const all = Array.from(_dom_adapter.default.getDocument().querySelectorAll(FOCUSABLE_ELEMENTS_SELECTOR));
+    return all.filter(el => {
+      if (referenceEl.contains(el) || !this._isElementFocusable(el)) {
+        return false;
+      }
+      const position = referenceEl.compareDocumentPosition(el);
+      /* eslint-disable no-bitwise */
+      return preceding ? Boolean(position & Node.DOCUMENT_POSITION_PRECEDING) : Boolean(position & Node.DOCUMENT_POSITION_FOLLOWING);
+      /* eslint-enable no-bitwise */
+    });
   }
   _getToolbarElement() {
     return this.$element().find(`.${HTML_EDITOR_TOOLBAR_WRAPPER_CLASS}`);
@@ -213210,7 +213257,7 @@ class HtmlEditor extends _editor.default {
     if (!$toolbar.length) {
       return;
     }
-    const candidates = $toolbar.find(TOOLBAR_FOCUSABLE_SELECTOR).toArray();
+    const candidates = $toolbar.find(FOCUSABLE_ELEMENTS_SELECTOR).toArray();
     const target = candidates.find(el => this._isElementFocusable(el));
     target === null || target === void 0 || target.focus();
   }
@@ -213368,40 +213415,12 @@ class HtmlEditor extends _editor.default {
     };
   }
   _getKeyboardModuleConfig() {
+    // Tab/indent/outdent keyboard-trap fix (releasing plain-text Tab to the
+    // browser, unconditional list/blockquote indent-outdent) lives in
+    // devextreme-quill's Keyboard.DEFAULTS.bindings, not here: it's generic
+    // Quill editing behavior, not specific to the dxHtmlEditor widget.
     return {
-      onKeydown: e => this._saveValueChangeEvent((0, _events.Event)(e)),
-      // Release Tab in plain contexts so the browser can move focus out
-      // of the contenteditable to the next tab stop (TinyMCE / CKEditor
-      // convention). Quill's catch-all `tab` default binding inserts a
-      // tab character and preventDefaults, trapping focus; setting it to
-      // null removes only that binding. Context-specific Tab handlers
-      // (indent/outdent in lists, blockquote, indent; code-block indent;
-      // table cell navigation) are registered by their own modules with
-      // format filters and keep working in those contexts.
-      //
-      // Override Quill's default `indent`/`outdent` handlers so Tab
-      // inside a list / blockquote / indented block always indents,
-      // regardless of caret offset. Quill's defaults only indent when
-      // caret is at offset 0 and otherwise return `true` (fall through);
-      // without the catch-all `tab` binding that fall-through would let
-      // Tab escape the editor mid-line, which is unexpected in a list.
-      bindings: {
-        tab: null,
-        indent: {
-          handler(_range, _context) {
-            // eslint-disable-next-line @typescript-eslint/no-invalid-this
-            this.quill.format('indent', '+1', 'user');
-            return false;
-          }
-        },
-        outdent: {
-          handler(_range, _context) {
-            // eslint-disable-next-line @typescript-eslint/no-invalid-this
-            this.quill.format('indent', '-1', 'user');
-            return false;
-          }
-        }
-      }
+      onKeydown: e => this._saveValueChangeEvent((0, _events.Event)(e))
     };
   }
   _getClipboardConfig() {
