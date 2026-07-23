@@ -138,4 +138,5 @@ Fix for TabPanel only: **[js]** https://pharret31.github.io/DevExtreme-showcase/
 **[js]** https://pharret31.github.io/DevExtreme-showcase/artifacts/27-1-htmleditor-keyboard-trap/js/dx.all.js
 
 **[demo]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-htmleditor-demo/js/dx.all.js
+**[demo-fixed]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-htmleditor-demo/js/dx.all.debug.js
 **[css]** https://pharret31.github.io/DevExtreme-showcase/artifacts/26-2-htmleditor-demo/css/dx.fluent.blue.light.css
